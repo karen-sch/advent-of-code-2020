@@ -6,13 +6,13 @@ import kotlin.test.assertEquals
 class Day2_1KtTest {
 
     @Test
-    fun `how many matches returns correct number of matches`() {
+    fun `how many min max matches returns correct number of matches`() {
         val passwordRules = listOf(
             PasswordRule(1, 3, 'a', "abcde"),
             PasswordRule(1, 3, 'b', "cdefg"),
             PasswordRule(2, 9, 'c', "ccccccccc")
         )
-        val result = howManyMatchRule(passwordRules)
+        val result = howManyMatchMinMaxRule(passwordRules)
         assertEquals(2, result)
     }
 
@@ -23,7 +23,7 @@ class Day2_1KtTest {
             PasswordRule(1, 3, 'b', "cdefg"),
             PasswordRule(2, 9, 'c', "cccccccccc")
         )
-        val result = howManyMatchRule(passwordRules)
+        val result = howManyMatchMinMaxRule(passwordRules)
         assertEquals(0, result)
     }
 

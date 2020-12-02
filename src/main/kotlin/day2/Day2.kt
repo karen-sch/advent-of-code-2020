@@ -3,23 +3,23 @@ package day2
 import common.fileFromResources
 import java.nio.charset.StandardCharsets
 
-fun howManyMatchRule(passwordRules: List<PasswordRule>): Int {
+fun howManyMatchMinMaxRule(passwordRules: List<PasswordRule>): Int {
     var matches = 0
     for (rule in passwordRules) {
         val count = rule.password.count { it == rule.letter }
-        if (count in rule.min..rule.max) matches++
+        if (count in rule.num1..rule.num2) matches++
     }
     return matches
 }
 
 fun main() {
     Day2.input?.let {
-        val result = howManyMatchRule(it)
+        val result = howManyMatchMinMaxRule(it)
         println(result)
     }
 }
 
-data class PasswordRule(val min: Int, val max: Int, val letter: Char, val password: String)
+data class PasswordRule(val num1: Int, val num2: Int, val letter: Char, val password: String)
 
 object Day2 {
     private const val pattern = "(\\d+)-(\\d+) (\\w): (\\w+)"
