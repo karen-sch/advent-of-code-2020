@@ -8,13 +8,11 @@ const val TREE = '#'
 const val NO_TREE = '.'
 
 fun countEncounteredTreesOnSlope(grid: List<String>): Int {
-    val slope = generateSequence(3) { it + 3 }
-        .take(grid.size - 1)
-        .mapIndexed { index, i -> index + 1 to i % grid[0].length }
+    val slope = generateRightNDown1Slope(3, grid)
     return slope.countEncounteredTrees(grid)
 }
 
-fun Sequence<Pair<Int, Int>>.countEncounteredTrees(
+private fun Sequence<Pair<Int, Int>>.countEncounteredTrees(
     grid: List<String>
 ): Int {
     return this.fold(0) { treeCount, (y, x) ->
@@ -26,31 +24,25 @@ fun Sequence<Pair<Int, Int>>.countEncounteredTrees(
     }
 }
 
-fun countEncounteredTreesDifferentSlopes(grid: List<String>): Int {
-    val right1Down1Slope = generateSequence(1) { it + 1 }
+private fun generateRightNDown1Slope(right: Int, grid: List<String>): Sequence<Pair<Int, Int>> {
+    return generateSequence(right) { it + right }
         .take(grid.size - 1)
         .mapIndexed { index, i -> index + 1 to i % grid[0].length }
+}
 
-    val right3Down1Slope = generateSequence(3) { it + 3 }
-        .take(grid.size - 1)
-        .mapIndexed { index, i -> index + 1 to i % grid[0].length }
-
-    val right5Down1Slope = generateSequence(5) { it + 5 }
-        .take(grid.size - 1)
-        .mapIndexed { index, i -> index + 1 to i % grid[0].length }
-
-    val right7Down1Slope = generateSequence(7) { it + 7 }
-        .take(grid.size - 1)
-        .mapIndexed { index, i -> index + 1 to i % grid[0].length }
-
-    val right1Down2Slope = (2 until grid.size step 2).asSequence()
+private fun generateRight1DownNSlope(down: Int, grid: List<String>): Sequence<Pair<Int, Int>> {
+    return (down until grid.size step down).asSequence()
         .mapIndexed { index, i -> i to (index + 1) % grid[0].length }
+}
 
-    return right1Down1Slope.countEncounteredTrees(grid) *
-            right3Down1Slope.countEncounteredTrees(grid) *
-            right5Down1Slope.countEncounteredTrees(grid) *
-            right7Down1Slope.countEncounteredTrees(grid) *
-            right1Down2Slope.countEncounteredTrees(grid)
+fun countEncounteredTreesDifferentSlopes(grid: List<String>): Int {
+    return listOf(
+        generateRightNDown1Slope(1, grid),
+        generateRightNDown1Slope(3, grid),
+        generateRightNDown1Slope(5, grid),
+        generateRightNDown1Slope(7, grid),
+        generateRight1DownNSlope(2, grid)
+    ).map { it.countEncounteredTrees(grid) }.reduce { acc, i -> acc * i }
 }
 
 fun main() {
