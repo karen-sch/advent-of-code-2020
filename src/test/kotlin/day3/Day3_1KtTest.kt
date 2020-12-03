@@ -14,7 +14,13 @@ class Day3_1KtTest {
 
     @Test
     fun `correctly counts number of encountered trees`() {
-        val result = countEncounteredTrees(input!!)
+        val result = countEncounteredTreesOnSlope(input!!)
         assertEquals(7, result)
+    }
+
+    @Test
+    fun `correctly counts multiplied number of encountered trees in different slopes`() {
+        val result = countEncounteredTreesDifferentSlopes(input!!)
+        assertEquals(336, result)
     }
 }
