@@ -36,3 +36,5 @@ atlassian-ide-plugin.xml
 !.idea/inspectionProfiles/*
 .idea/copyright/*
 .idea/uiDesigner.xml
+.idea/gradle.xml
+.idea/workspace.xml
