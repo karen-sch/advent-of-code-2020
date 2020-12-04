@@ -51,7 +51,7 @@ class PassportParser(
 
     private fun parseBirthYear(value: String) {
         val by = value.toInt()
-        if (by in 1920..2002 || !strictParsing) {
+        if (!strictParsing || by in 1920..2002) {
             birthYear = by
         }
     }
