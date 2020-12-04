@@ -22,7 +22,7 @@ class PassportParser(
 
     private val passports = mutableListOf<Passport>()
 
-    fun parse(file: File): MutableList<Passport> {
+    fun parse(file: File): List<Passport> {
         passports.clear()
         file.forEachLine { line ->
             if (line.isEmpty()) {
@@ -46,7 +46,7 @@ class PassportParser(
         }
 
         addCurrentPassportIfValidAndReset()
-        return passports
+        return passports.toList()
     }
 
     private fun parseBirthYear(value: String) {
