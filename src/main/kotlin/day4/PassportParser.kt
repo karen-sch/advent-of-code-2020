@@ -2,7 +2,6 @@ package day4
 
 import java.io.File
 
-
 val heightRegex = Regex("(\\d+)(in|cm)")
 val hairColorRegex = Regex("#[0-9a-f]+")
 val validEyeColors = setOf("amb", "blu", "brn", "gry", "grn", "hzl", "oth")
@@ -27,7 +26,7 @@ class PassportParser(
         passports.clear()
         file.forEachLine { line ->
             if (line.isEmpty()) {
-                addCurrentPassportAndReset()
+                addCurrentPassportIfValidAndReset()
             } else {
                 line.split(" ").forEach { attribute ->
                     val key = attribute.substringBefore(":")
@@ -46,29 +45,8 @@ class PassportParser(
             }
         }
 
-        addCurrentPassportAndReset()
+        addCurrentPassportIfValidAndReset()
         return passports
-    }
-
-
-    private fun addCurrentPassportAndReset() {
-        if (birthYear != null && issueYear != null && expirationYear != null && height != null && hairColor != null
-            && eyeColor != null && passportId != null && (countryId != null || !requireCountryId)
-        ) {
-            val passport = Passport(
-                birthYear!!, issueYear!!, expirationYear!!, height!!, hairColor!!,
-                eyeColor!!, passportId!!, countryId
-            )
-            passports.add(passport)
-        }
-        birthYear = null
-        issueYear = null
-        expirationYear = null
-        height = null
-        hairColor = null
-        eyeColor = null
-        passportId = null
-        countryId = null
     }
 
     private fun parseBirthYear(value: String) {
@@ -80,14 +58,14 @@ class PassportParser(
 
     private fun parseIssueYear(value: String) {
         val iy = value.toInt()
-        if (iy in 2010..2020 || !strictParsing) {
+        if (!strictParsing || iy in 2010..2020) {
             issueYear = iy
         }
     }
 
     private fun parseExpirationYear(value: String) {
         val ey = value.toInt()
-        if (ey in 2020..2030 || !strictParsing) {
+        if (!strictParsing || ey in 2020..2030) {
             expirationYear = ey
         }
     }
@@ -135,4 +113,23 @@ class PassportParser(
         countryId = value
     }
 
+    private fun addCurrentPassportIfValidAndReset() {
+        if (birthYear != null && issueYear != null && expirationYear != null && height != null && hairColor != null
+            && eyeColor != null && passportId != null && (countryId != null || !requireCountryId)
+        ) {
+            val passport = Passport(
+                birthYear!!, issueYear!!, expirationYear!!, height!!, hairColor!!,
+                eyeColor!!, passportId!!, countryId
+            )
+            passports.add(passport)
+        }
+        birthYear = null
+        issueYear = null
+        expirationYear = null
+        height = null
+        hairColor = null
+        eyeColor = null
+        passportId = null
+        countryId = null
+    }
 }

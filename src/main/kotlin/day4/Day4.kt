@@ -8,7 +8,6 @@ data class Passport(
     val eyeColor: String, val passportId: String, val countryId: String?
 )
 
-
 fun countValidPassports(passportsFile: File): Int {
     val parser = PassportParser(strictParsing = false)
     return parser.parse(passportsFile).size
