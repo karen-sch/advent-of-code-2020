@@ -3,26 +3,27 @@ package day5
 import common.fileFromResources
 import java.lang.IllegalArgumentException
 
+val LOWER = Regex("[FL]")
+val UPPER = Regex("[BR]")
+
 fun getSeatId(seat: String): Int {
     if (seat.length != 10) throw IllegalArgumentException("seat has to have length 10")
 
-    val binarySeat = seat.replace(Regex("[FL]"), "0")
-        .replace(Regex("[BR]"), "1")
+    val binarySeat = seat.replace(LOWER, "0")
+        .replace(UPPER, "1")
 
     return Integer.parseInt(binarySeat, 2)
 }
 
-fun getEmptySeat(seatIds: List<Int>): Int {
-    val validSeatIds = seatIds.first()..seatIds.last()
-    return validSeatIds.find { it !in seatIds } ?: throw IllegalArgumentException("No empty seat found in input")
+fun getEmptySeat(occupiedSortedSeatIds: List<Int>): Int {
+    val validSeatIds = occupiedSortedSeatIds.first()..occupiedSortedSeatIds.last()
+    return validSeatIds.find { it !in occupiedSortedSeatIds }
+        ?: throw IllegalArgumentException("No empty seat found in input")
 }
-
 
 fun main() {
     Day5.input?.let {
-        val seatIds = it.readLines().map { seat ->
-            getSeatId(seat)
-        }.sorted()
+        val seatIds = it.readLines().map(::getSeatId).sorted()
         val highestSeatId = seatIds.last()
         val emptySeatId = getEmptySeat(seatIds)
 
