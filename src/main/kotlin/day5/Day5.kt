@@ -1,7 +1,6 @@
 package day5
 
 import common.fileFromResources
-import java.io.File
 import java.lang.IllegalArgumentException
 
 fun getRowAndColumn(seat: String): Pair<Int, Int> {
@@ -45,44 +44,24 @@ fun getSeatId(row: Int, column: Int): Int {
     return row * 8 + column
 }
 
-fun getEmptySeat(seats: List<Pair<Int, Int>>): Int {
-    val seatMap = HashMap<Int, MutableSet<Int>>()
-    val seatIdMap = HashSet<Int>()
-    seats.map { (row, column) ->
-        seatIdMap.add(getSeatId(row, column))
-        seatMap.getOrPut(row, { HashSet() }).add(column)
-    }
-
-    seatMap.forEach { entry ->
-        if (entry.value.size != 8) {
-            (0..7).filterNot { column -> column in entry.value }.forEach { column ->
-                val seatId = getSeatId(entry.key, column)
-                if (seatIdMap.contains(seatId - 1) && seatIdMap.contains(seatId + 1)) {
-                    return seatId
-                }
-            }
-        }
-    }
-    throw IllegalArgumentException("No empty seat found for data set")
+fun getEmptySeat(seatIds: List<Int>): Int {
+    val validSeatIds = seatIds.first()..seatIds.last()
+    return validSeatIds.find { it !in seatIds } ?: throw IllegalArgumentException("No empty seat found in input")
 }
 
 
 fun main() {
     Day5.input?.let {
-        val highestSeatId = it.readLines().map { seat ->
+        val seatIds = it.readLines().map { seat ->
             getRowAndColumn(seat)
         }.map { (row, column) ->
             getSeatId(row, column)
-        }.maxOrNull()
+        }.sorted()
+        val highestSeatId = seatIds.last()
+        val emptySeatId = getEmptySeat(seatIds)
 
         println("Part 1, highest seat id: $highestSeatId")
-
-        val emptySeatId = getEmptySeat(it.readLines().map { seat ->
-            getRowAndColumn(seat)
-        })
-
         println("Part 2, empty seat with id: $emptySeatId")
-
     }
 }
 
