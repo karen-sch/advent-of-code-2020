@@ -23,7 +23,7 @@ fun parseGroupsGetAnswersByAnyone(fileContent: String): Int {
 
 fun parseGroupsGetAnswersByEveryone(fileContent: String): Int {
     return fileContent.split(DOUBLE_NEW_LINE).map { group ->
-        val people = group.lines().filter { it.isNotBlank() }.map { it.toSet() }
+        val people = group.lines().filter { it.isNotBlank() }.map(String::toSet)
         group.toCharArray().distinct().filterNot(Char::isWhitespace).filter { char ->
             people.all { person -> person.contains(char) }
         }
