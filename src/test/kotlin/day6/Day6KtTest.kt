@@ -34,7 +34,7 @@ class Day6KtTest {
     @Test
     fun `part 2 works correctly`() {
         val sum = parseGroupsGetAnswersByEveryone(input)
-        
+
         assertEquals(6, sum)
     }
 
