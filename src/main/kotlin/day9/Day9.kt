@@ -14,16 +14,12 @@ fun main() {
 }
 
 fun findFirstNonSumNumber(numbers: List<Long>, preambleLength: Int = 25): Long {
-    (preambleLength until numbers.size).forEach { i ->
-        val number = numbers[i]
+    return (preambleLength..numbers.lastIndex).find { i ->
         val possibleSummands = (i - preambleLength until i).map { numbers[it] }.toSet()
-
-        if (possibleSummands.none() {
-                possibleSummands.minus(it).contains(number - it)
-            }) return number
-    }
-
-    throw IllegalArgumentException("No non-sum number found for input data")
+        possibleSummands.none() {
+            possibleSummands.minus(it).contains(numbers[i] - it)
+        }
+    }?.let { numbers[it] } ?: throw IllegalArgumentException("No non-sum number found for input data")
 }
 
 fun findContiguousSetThatSumUpTo(sum: Long, numbers: List<Long>): Long {
