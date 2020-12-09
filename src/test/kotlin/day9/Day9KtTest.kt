@@ -18,8 +18,8 @@ class Day9KtTest {
 
     @Test
     fun `part 2 works correctly`() {
-
-        assertEquals(true, true)
+        val result = findContiguousSetThatSumUpTo(findFirstNonSumNumber(input, 5), input)
+        assertEquals(62, result)
     }
 
 }
