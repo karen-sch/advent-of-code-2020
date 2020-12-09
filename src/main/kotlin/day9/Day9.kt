@@ -23,18 +23,25 @@ fun findFirstNonSumNumber(numbers: List<Long>, preambleLength: Int = 25): Long {
 }
 
 fun findContiguousSetThatSumUpTo(sum: Long, numbers: List<Long>): Long {
-    numbers.forEachIndexed { i, number ->
-        var j = i + 1
-        val summands = mutableListOf(number)
-        while (summands.sum() < sum && j < numbers.size) {
-            summands.add(numbers[j])
-            j++
-        }
-        if (summands.sum() == sum) {
-            return summands.minOrNull()!! + summands.maxOrNull()!!
+    var windowStart = 0
+    var windowEnd = 0
+    var windowSum = numbers[0]
+    while (true) {
+        when {
+            windowSum < sum -> {
+                windowEnd++
+                windowSum += numbers[windowEnd]
+            }
+            windowSum > sum -> {
+                windowSum -= numbers[windowStart]
+                windowStart++
+            }
+            else -> {
+                val window = (windowStart..windowEnd).map { numbers[it] }
+                return window.minOrNull()!! + window.maxOrNull()!!
+            }
         }
     }
-    throw IllegalArgumentException("No contiguous set that sums up to $sum found in input data")
 }
 
 object Day9 {
