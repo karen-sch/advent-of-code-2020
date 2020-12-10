@@ -18,7 +18,8 @@ class Day10KtTest {
 
     @Test
     fun `part 2 works correctly`() {
-        assertEquals(62, 62)
+        val result = countDifferentWays(input)
+        assertEquals(19208, result)
     }
 
 }
