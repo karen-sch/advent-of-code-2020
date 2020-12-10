@@ -33,31 +33,29 @@ fun countDifferentWays(input: List<Int>): Long {
     val sorted = input.sorted()
     val jolts = listOf(0) + sorted + (sorted.last() + 3)
 
-    return generatePermutations(jolts, mutableMapOf(), 0)
+    return generatePermutations(jolts, mutableMapOf())
 }
 
 fun generatePermutations(jolts: List<Int>,
-                         seenPermutations: MutableMap<Int, Long>,
-                         sum: Long): Long {
+                         seenPermutations: MutableMap<Int, Long>): Long {
     if (jolts.size == 1) {
-        return sum + 1
+        return 1
     }
 
-    return countPermutationsForIndex(jolts, 1, seenPermutations, sum) +
-            countPermutationsForIndex(jolts, 2, seenPermutations, sum) +
-            countPermutationsForIndex(jolts, 3, seenPermutations, sum)
+    return countPermutationsForIndex(jolts, 1, seenPermutations) +
+            countPermutationsForIndex(jolts, 2, seenPermutations) +
+            countPermutationsForIndex(jolts, 3, seenPermutations)
 
 }
 
 private fun countPermutationsForIndex(
     jolts: List<Int>,
     index: Int,
-    seenPermutations: MutableMap<Int, Long>,
-    sum: Long
+    seenPermutations: MutableMap<Int, Long>
 ): Long {
     if (jolts.size > index && jolts[index] - jolts.first() in 1..3) {
         return seenPermutations.computeIfAbsent(jolts.size - index) {
-            generatePermutations(jolts.drop(index), seenPermutations, sum)
+            generatePermutations(jolts.drop(index), seenPermutations)
         }
     }
     return 0
