@@ -35,11 +35,10 @@ fun countOccupiedSeats(lines: List<String>, pattern: (List<String>) -> List<Stri
     return after.sumBy { it.count { char -> char == OCCUPIED } }
 }
 
-fun matchChars(char: Char, seats: List<Char>, occupiedToEmpty: Int): Char {
+fun mapOccupiedAndEmpty(char: Char, seats: List<Char>, occupiedToEmpty: Int): Char {
     return when (char) {
         OCCUPIED -> if (seats.count { it == OCCUPIED } >= occupiedToEmpty) EMPTY else OCCUPIED
         EMPTY -> if (seats.none { it == OCCUPIED }) OCCUPIED else EMPTY
-        FLOOR -> FLOOR
         else -> throw IllegalArgumentException("Illegal char $char")
     }
 }
@@ -49,11 +48,15 @@ fun applyPattern1(lines: List<String>): List<String> {
     val validXs = lines.first().indices
     return lines.mapIndexed { i, line ->
         line.mapIndexed { j, char ->
-            val adjacentCoords = directions.map { (y, x) -> i + y to j + x }
-                .filter { (y, x) -> y in validYs && x in validXs }
-            val adjacentSeats = adjacentCoords.map { (y, x) -> lines[y][x] }
+            if (char == FLOOR) {
+                FLOOR
+            } else {
+                val adjacentCoords = directions.map { (y, x) -> i + y to j + x }
+                    .filter { (y, x) -> y in validYs && x in validXs }
+                val adjacentSeats = adjacentCoords.map { (y, x) -> lines[y][x] }
 
-            matchChars(char, adjacentSeats, 4)
+                mapOccupiedAndEmpty(char, adjacentSeats, 4)
+            }
         }.toCharArray().let { String(it) }
     }
 }
@@ -64,21 +67,18 @@ fun applyPattern2(lines: List<String>): List<String> {
 
     return lines.mapIndexed { i, line ->
         line.mapIndexed { j, char ->
-            val seen = directions.mapNotNull { (addToY, addToX) ->
-                var y: Int
-                var x: Int
-                var mul = 1
-                do {
-                    y = i + addToY * mul
-                    x = j + addToX * mul
-                    mul++
-                } while (y in validYs && x in validXs && lines[y][x] == FLOOR)
-
-                if (y in validYs && x in validXs) {
-                    lines[y][x]
-                } else null
+            if (char == FLOOR) {
+                FLOOR
+            } else {
+                val seen = directions.mapNotNull { (dirY, dirX) ->
+                    generateSequence(1) { it + 1 }
+                        .map { i + dirY * it to j + dirX * it }
+                        .takeWhile { (y, x) -> y in validYs && x in validXs }
+                        .map { (y, x) -> lines[y][x] }
+                        .find { it != FLOOR }
+                }
+                mapOccupiedAndEmpty(char, seen, 5)
             }
-            matchChars(char, seen, 5)
         }.toCharArray().let { String(it) }
     }
 }
