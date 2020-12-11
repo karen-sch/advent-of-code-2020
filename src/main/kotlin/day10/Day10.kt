@@ -45,7 +45,6 @@ fun generatePermutations(jolts: List<Int>,
     return countPermutationsForIndex(jolts, 1, seenPermutations) +
             countPermutationsForIndex(jolts, 2, seenPermutations) +
             countPermutationsForIndex(jolts, 3, seenPermutations)
-
 }
 
 private fun countPermutationsForIndex(
