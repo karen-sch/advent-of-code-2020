@@ -7,35 +7,50 @@ private const val OCCUPIED = '#'
 private const val EMPTY = 'L'
 private const val FLOOR = '.'
 
+val directions = setOf(
+    -1 to -1, -1 to 0, -1 to 1,
+    0 to -1, 0 to 1,
+    1 to -1, 1 to 0, 1 to 1
+)
+
 fun main() {
     Day11.input?.let {
-        val result1 = countOccupiedSeats(it)
+        val result1 = countOccupiedSeats(it, ::applyPattern1)
         println("Part 1: $result1")
 
-        val result2 = countOccupiedSeats2(it)
+        val result2 = countOccupiedSeats(it, ::applyPattern2)
         println("Part 2: $result2")
     }
 }
 
-fun countOccupiedSeats(lines: List<String>): Int {
+fun countOccupiedSeats(lines: List<String>, pattern: (List<String>) -> List<String>): Int {
     var before = lines
-    var after = applyPattern(before)
+    var after = pattern(before)
 
     while (before != after) {
         before = after
-        after = applyPattern(after)
+        after = pattern(after)
     }
 
     return after.sumBy { it.count { char -> char == OCCUPIED } }
 }
 
-fun applyPattern(lines: List<String>): List<String> {
+fun matchChars(char: Char, seats: List<Char>, occupiedToEmpty: Int): Char {
+    return when (char) {
+        OCCUPIED -> if (seats.count { it == OCCUPIED } >= occupiedToEmpty) EMPTY else OCCUPIED
+        EMPTY -> if (seats.none { it == OCCUPIED }) OCCUPIED else EMPTY
+        FLOOR -> FLOOR
+        else -> throw IllegalArgumentException("Illegal char $char")
+    }
+}
+
+fun applyPattern1(lines: List<String>): List<String> {
+    val validYs = lines.indices
+    val validXs = lines.first().indices
     return lines.mapIndexed { i, line ->
         line.mapIndexed { j, char ->
-            val yIndices = ((i - 1).coerceAtLeast(0))..((i + 1).coerceAtMost(lines.lastIndex))
-            val xIndices = ((j - 1).coerceAtLeast(0))..((j + 1).coerceAtMost(line.lastIndex))
-
-            val adjacentCoords = yIndices.flatMap { y -> xIndices.map { x -> y to x } }.minus(i to j)
+            val adjacentCoords = directions.map { (y, x) -> i + y to j + x }
+                .filter { (y, x) -> y in validYs && x in validXs }
             val adjacentSeats = adjacentCoords.map { (y, x) -> lines[y][x] }
 
             matchChars(char, adjacentSeats, 4)
@@ -43,51 +58,12 @@ fun applyPattern(lines: List<String>): List<String> {
     }
 }
 
-fun matchChars(char: Char, seats: List<Char>, occupiedToEmpty: Int): Char {
-    return when (char) {
-        OCCUPIED -> {
-            if (seats.count { it == OCCUPIED } >= occupiedToEmpty) {
-                EMPTY
-            } else {
-                OCCUPIED
-            }
-        }
-        EMPTY -> {
-            if (seats.none { it == OCCUPIED }) {
-                OCCUPIED
-            } else {
-                EMPTY
-            }
-        }
-        FLOOR -> FLOOR
-        else -> throw IllegalArgumentException("Illegal char $char")
-    }
-}
-
-fun countOccupiedSeats2(lines: List<String>): Int {
-    var before = lines
-    var after = applyPattern2(before)
-
-    while (before != after) {
-        before = after
-        after = applyPattern2(after)
-    }
-    return after.sumBy { it.count { char -> char == OCCUPIED } }
-}
-
-
 fun applyPattern2(lines: List<String>): List<String> {
     val validYs = lines.indices
     val validXs = lines.first().indices
 
-    val directions = setOf(
-        -1 to -1, -1 to 0, -1 to 1,
-        0 to -1, 0 to 1,
-        1 to -1, 1 to 0, 1 to 1
-    )
     return lines.mapIndexed { i, line ->
         line.mapIndexed { j, char ->
-
             val seen = directions.mapNotNull { (addToY, addToX) ->
                 var y: Int
                 var x: Int
@@ -96,7 +72,7 @@ fun applyPattern2(lines: List<String>): List<String> {
                     y = i + addToY * mul
                     x = j + addToX * mul
                     mul++
-                } while (y in validYs && x in validXs && lines[y][x] == '.')
+                } while (y in validYs && x in validXs && lines[y][x] == FLOOR)
 
                 if (y in validYs && x in validXs) {
                     lines[y][x]

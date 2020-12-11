@@ -12,13 +12,13 @@ class Day11KtTest {
 
     @Test
     fun `part1 works correctly`() {
-        val result = countOccupiedSeats(input!!)
+        val result = countOccupiedSeats(input!!, ::applyPattern1)
         assertEquals(37, result)
     }
 
     @Test
     fun `part 2 works correctly`() {
-        val result = countOccupiedSeats2(input!!)
+        val result = countOccupiedSeats(input!!, ::applyPattern2)
         assertEquals(26, result)
     }
 
