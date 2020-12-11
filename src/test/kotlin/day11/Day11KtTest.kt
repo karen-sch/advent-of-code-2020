@@ -18,8 +18,8 @@ class Day11KtTest {
 
     @Test
     fun `part 2 works correctly`() {
-        val result = 0
-        assertEquals(0, result)
+        val result = countOccupiedSeats2(input!!)
+        assertEquals(26, result)
     }
 
 }
