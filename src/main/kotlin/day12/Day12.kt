@@ -5,6 +5,7 @@ import kotlin.math.absoluteValue
 
 val directions = mapOf('E' to (0 to 1), 'W' to (0 to -1), 'N' to (1 to 0), 'S' to (-1 to 0))
 val cardinals = listOf('E', 'S', 'W', 'N')
+val rotations = setOf('L', 'R')
 
 fun main() {
     Day12.input?.let {
@@ -24,13 +25,9 @@ fun part1(lines: List<String>): Int {
         val action = line[0]
         val value = line.substring(1).toInt()
         when (action) {
-            'F' -> {
-                coords = move(coords, direction, value)
-            }
-            in cardinals -> {
-                coords = move(coords, action, value)
-            }
-            in setOf('L', 'R') -> {
+            'F' -> coords = move(coords, direction, value)
+            in cardinals -> coords = move(coords, action, value)
+            in rotations -> {
                 var delta = value / 90
                 if (action == 'L') delta = -delta
                 val index = cardinals.indexOf(direction)
@@ -50,15 +47,10 @@ fun part2(lines: List<String>): Int {
         val action = line[0]
         val value = line.substring(1).toInt()
         when (action) {
-            'F' -> {
-                coords = moveToWaypoint(coords, waypoint, value)
-            }
-            in cardinals -> {
-                waypoint = move(waypoint, action, value)
-            }
-            in setOf('L', 'R') -> {
-                var delta = value / 90
-
+            'F' -> coords = moveToWaypoint(coords, waypoint, value)
+            in cardinals -> waypoint = move(waypoint, action, value)
+            in rotations -> {
+                val delta = value / 90
                 repeat(delta) {
                     when (action) {
                         'L' -> waypoint = waypoint.second to -waypoint.first
@@ -72,8 +64,8 @@ fun part2(lines: List<String>): Int {
     return coords.first.absoluteValue + coords.second.absoluteValue
 }
 
-fun move(current: Pair<Int, Int>, someplace: Char, value: Int): Pair<Int, Int> {
-    val d = directions.getValue(someplace)
+fun move(current: Pair<Int, Int>, direction: Char, value: Int): Pair<Int, Int> {
+    val d = directions.getValue(direction)
     return (current.first + (d.first * value) to current.second + (d.second * value))
 }
 
