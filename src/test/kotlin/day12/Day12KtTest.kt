@@ -23,7 +23,7 @@ class Day12KtTest {
 
     @Test
     fun `part 2 works correctly`() {
-
+        val result = part2(input)
+        assertEquals(286, result)
     }
-
 }

@@ -11,7 +11,7 @@ fun main() {
         val result1 = part1(it)
         println("Part 1: $result1")
 
-        val result2 = ""
+        val result2 = part2(it)
         println("Part 2: $result2")
     }
 }
@@ -20,7 +20,7 @@ fun part1(lines: List<String>): Int {
     var direction = 'E'
     var coords = 0 to 0
 
-    lines.forEach { line->
+    lines.forEach { line ->
         val action = line[0]
         val value = line.substring(1).toInt()
         when (action) {
@@ -42,11 +42,44 @@ fun part1(lines: List<String>): Int {
     return coords.first.absoluteValue + coords.second.absoluteValue
 }
 
+fun part2(lines: List<String>): Int {
+    var coords = 0 to 0
+    var waypoint = 1 to 10
+
+    lines.forEach { line ->
+        val action = line[0]
+        val value = line.substring(1).toInt()
+        when (action) {
+            'F' -> {
+                coords = moveToWaypoint(coords, waypoint, value)
+            }
+            in cardinals -> {
+                waypoint = move(waypoint, action, value)
+            }
+            in setOf('L', 'R') -> {
+                var delta = value / 90
+
+                repeat(delta) {
+                    when (action) {
+                        'L' -> waypoint = waypoint.second to -waypoint.first
+                        'R' -> waypoint = -waypoint.second to waypoint.first
+                    }
+                }
+            }
+        }
+    }
+
+    return coords.first.absoluteValue + coords.second.absoluteValue
+}
+
 fun move(current: Pair<Int, Int>, someplace: Char, value: Int): Pair<Int, Int> {
     val d = directions.getValue(someplace)
     return (current.first + (d.first * value) to current.second + (d.second * value))
 }
 
+fun moveToWaypoint(current: Pair<Int, Int>, waypoint: Pair<Int, Int>, value: Int): Pair<Int, Int> {
+    return (current.first + (waypoint.first * value) to current.second + (waypoint.second * value))
+}
 
 object Day12 {
     val input by lazy {
