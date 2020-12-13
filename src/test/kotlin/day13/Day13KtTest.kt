@@ -1,6 +1,5 @@
 package day13
 
-import common.fileFromResources
 import org.junit.Test
 import kotlin.test.assertEquals
 
