@@ -5,12 +5,12 @@ import kotlin.test.assertEquals
 
 class Day13KtTest {
 
-    val testBuses = listOf<Long>(7, 13, -1, -1, 59, -1, 31, 19)
+    private val testBuses = listOf<Long>(7, 13, -1, -1, 59, -1, 31, 19)
 
     @Test
     fun `part1 works correctly`() {
-       // val result = part1(input)
-        assertEquals(25, 25)
+        val result = part1(939, testBuses)
+        assertEquals(295, result)
     }
 
     @Test

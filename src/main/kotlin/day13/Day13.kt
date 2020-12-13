@@ -105,9 +105,24 @@ val buses = listOf<Long>(
     41
 )
 
+val earliestDeparture = 1000511L
+
 fun main() {
-   val result2 = part2(buses)
+    val result1 = part1(earliestDeparture, buses)
+    println("Part 1: $result1")
+    val result2 = part2(buses)
     println("Part 2: $result2")
+}
+
+fun part1(earliestDeparture: Long, input: List<Long>): Long {
+    val buses = input.filterNot { it == -1L }
+
+    var departureTime = earliestDeparture
+    while (true) {
+        val bus = buses.find { departureTime % it == 0L }
+        if (bus != null) return bus * (departureTime - earliestDeparture)
+        departureTime++
+    }
 }
 
 fun part2(input: List<Long>): Long {
