@@ -44,36 +44,6 @@ fun parseInput(
 }
 
 @ExperimentalUnsignedTypes
-fun applyMaskPart2(initalAddress: ULong, number: ULong, mask: String, memory: HashMap<ULong, ULong>) {
-    var addresses = listOf<ULong>(0u)
-    (0..35).forEach { bitAt ->
-        val bit = (initalAddress shr bitAt) and 1u
-        addresses = when (mask[mask.lastIndex - bitAt]) {
-            '0' -> addresses.map { address ->
-                address or (bit shl bitAt)
-            }
-
-            '1' -> addresses.map { address ->
-                address or (1uL shl bitAt)
-            }
-
-            'X' -> addresses.flatMap { address ->
-                listOf(
-                    address or (0uL shl bitAt),
-                    address or (1uL shl bitAt)
-                )
-            }
-
-            else -> throw IllegalArgumentException()
-        }
-    }
-
-    addresses.forEach { address ->
-        memory[address] = number
-    }
-}
-
-@ExperimentalUnsignedTypes
 fun applyMaskPart1(address: ULong, number: ULong, mask: String, memory: HashMap<ULong, ULong>) {
     var solution: ULong = 0u
     (0..35).forEach { bitAt ->
@@ -87,6 +57,33 @@ fun applyMaskPart1(address: ULong, number: ULong, mask: String, memory: HashMap<
         }
     }
     memory[address] = solution
+}
+
+@ExperimentalUnsignedTypes
+fun applyMaskPart2(initalAddress: ULong, number: ULong, mask: String, memory: HashMap<ULong, ULong>) {
+    var addresses = listOf<ULong>(0u)
+    (0..35).forEach { bitAt ->
+        val bit = (initalAddress shr bitAt) and 1u
+        addresses = when (mask[mask.lastIndex - bitAt]) {
+            '0' -> addresses.map { address ->
+                address or (bit shl bitAt)
+            }
+            '1' -> addresses.map { address ->
+                address or (1uL shl bitAt)
+            }
+            'X' -> addresses.flatMap { address ->
+                listOf(
+                    address or (0uL shl bitAt),
+                    address or (1uL shl bitAt)
+                )
+            }
+            else -> throw IllegalArgumentException()
+        }
+    }
+
+    addresses.forEach { address ->
+        memory[address] = number
+    }
 }
 
 object Day14 {
