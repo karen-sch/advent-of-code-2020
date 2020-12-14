@@ -5,7 +5,7 @@ package day14
 import common.fileFromResources
 
 val MASK_REGEX = Regex("([10X]+)")
-val MEM_MASK = Regex("mem\\[(\\d+)\\] = (\\d+)")
+val MEM_MASK = Regex("mem\\[(\\d+)] = (\\d+)")
 
 @ExperimentalUnsignedTypes
 fun main() {
@@ -46,8 +46,7 @@ fun applyMaskPart2(address: ULong, number: ULong, mask: String, memory: HashMap<
     val solutions = mutableListOf<ULong>(0u)
     (0..35).forEach { bitAt ->
         val bit = (address shr bitAt) and 1u
-        val maskAtIndex = mask[mask.lastIndex - bitAt]
-        when (maskAtIndex) {
+        when (mask[mask.lastIndex - bitAt]) {
             '0' -> {
                 solutions.forEachIndexed { i, solution ->
                     solutions[i] = solution or (bit shl bitAt)
