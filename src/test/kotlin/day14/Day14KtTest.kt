@@ -4,7 +4,7 @@ import org.junit.Test
 import kotlin.test.assertEquals
 
 class Day14KtTest {
-    
+
     @Test
     @ExperimentalUnsignedTypes
     fun `part1 works correctly`() {

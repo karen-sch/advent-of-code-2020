@@ -3,6 +3,7 @@
 package day14
 
 import common.fileFromResources
+import java.lang.IllegalArgumentException
 
 val MASK_REGEX = Regex("([10X]+)")
 val MEM_MASK = Regex("mem\\[(\\d+)] = (\\d+)")
@@ -24,7 +25,7 @@ fun parseInput(
     applyMask: (address: ULong, number: ULong, mask: String, memory: HashMap<ULong, ULong>) -> Unit
 ): ULong {
     val memory = HashMap<ULong, ULong>()
-    var mask = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+    var mask = ""
 
     lines.forEach { line ->
         if (line.startsWith("mask")) {
@@ -41,37 +42,35 @@ fun parseInput(
 
     return memory.values.sum()
 }
+
 @ExperimentalUnsignedTypes
-fun applyMaskPart2(address: ULong, number: ULong, mask: String, memory: HashMap<ULong, ULong>) {
-    val solutions = mutableListOf<ULong>(0u)
+fun applyMaskPart2(initalAddress: ULong, number: ULong, mask: String, memory: HashMap<ULong, ULong>) {
+    var addresses = listOf<ULong>(0u)
     (0..35).forEach { bitAt ->
-        val bit = (address shr bitAt) and 1u
-        when (mask[mask.lastIndex - bitAt]) {
-            '0' -> {
-                solutions.forEachIndexed { i, solution ->
-                    solutions[i] = solution or (bit shl bitAt)
-                }
+        val bit = (initalAddress shr bitAt) and 1u
+        addresses = when (mask[mask.lastIndex - bitAt]) {
+            '0' -> addresses.map { address ->
+                address or (bit shl bitAt)
             }
-            '1' -> {
-                solutions.forEachIndexed { i, solution ->
-                    solutions[i] = solution or (1.toULong() shl bitAt)
-                }
+
+            '1' -> addresses.map { address ->
+                address or (1uL shl bitAt)
             }
-            'X' -> {
-                val additionalSolutions = mutableListOf<ULong>()
-                solutions.forEachIndexed { i, solution ->
-                    solutions[i] = solution or (0.toULong() shl bitAt)
-                    additionalSolutions.add(solution or (1.toULong() shl bitAt))
-                }
-                solutions.addAll(additionalSolutions)
+
+            'X' -> addresses.flatMap { address ->
+                listOf(
+                    address or (0uL shl bitAt),
+                    address or (1uL shl bitAt)
+                )
             }
+
+            else -> throw IllegalArgumentException()
         }
     }
 
-    solutions.forEach { solution ->
-        memory[solution] = number
+    addresses.forEach { address ->
+        memory[address] = number
     }
-
 }
 
 @ExperimentalUnsignedTypes
