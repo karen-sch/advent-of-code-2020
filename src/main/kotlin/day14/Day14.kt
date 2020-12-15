@@ -60,10 +60,10 @@ fun applyMaskPart1(address: ULong, number: ULong, mask: String, memory: HashMap<
 }
 
 @ExperimentalUnsignedTypes
-fun applyMaskPart2(initalAddress: ULong, number: ULong, mask: String, memory: HashMap<ULong, ULong>) {
+fun applyMaskPart2(initialAddress: ULong, number: ULong, mask: String, memory: HashMap<ULong, ULong>) {
     var addresses = listOf<ULong>(0u)
     (0..35).forEach { bitAt ->
-        val bit = (initalAddress shr bitAt) and 1u
+        val bit = (initialAddress shr bitAt) and 1u
         addresses = when (mask[mask.lastIndex - bitAt]) {
             '0' -> addresses.map { address ->
                 address or (bit shl bitAt)
