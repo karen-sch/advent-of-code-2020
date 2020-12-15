@@ -6,7 +6,7 @@ import common.fileFromResources
 import java.lang.IllegalArgumentException
 
 val MASK_REGEX = Regex("([10X]+)")
-val MEM_MASK = Regex("mem\\[(\\d+)] = (\\d+)")
+val MEM_REGEX = Regex("mem\\[(\\d+)] = (\\d+)")
 
 @ExperimentalUnsignedTypes
 fun main() {
@@ -33,7 +33,7 @@ fun parseInput(
                 mask = it
             }
         } else if (line.startsWith("mem")) {
-            MEM_MASK.find(line)?.let {
+            MEM_REGEX.find(line)?.let {
                 val (address, value) = it.destructured
                 applyMask(address.toULong(), value.toULong(), mask, memory)
             }
