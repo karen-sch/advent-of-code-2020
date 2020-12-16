@@ -15,10 +15,4 @@ class Day16KtTest {
         val result = findScanningErrorsPart1(input!!)
         assertEquals(71, result)
     }
-
-    @Test
-    fun `part 2 works correctly`() {
-
-    }
-
 }
