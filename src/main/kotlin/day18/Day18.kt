@@ -2,47 +2,12 @@ package day18
 
 import common.fileFromResources
 
-sealed class Expression {
-    data class Integer(val value: Int) : Expression()
-    data class Operation(val left: Int, val operator: Operator, val right: Expression) : Expression()
-}
-
 enum class Operator {
     PLUS,
     TIMES;
 }
 
-fun Expression.evaluate(): Int {
-    return when (this) {
-        is Expression.Integer -> value
-
-        is Expression.Operation -> {
-            when (operator) {
-                Operator.PLUS -> left + right.evaluate()
-                Operator.TIMES -> left * right.evaluate()
-            }
-        }
-    }
-}
-
-
 fun main() {
-     val string = "2 * 3 + (4 * 5)"
-     val result = parse(string)
-     println(result)
-
-     val string2 = "5 + (8 * 3 + 9 + 3 * 4 * 3)"
-     val result2 = parse(string2)
-     println(result2)
-
-     val string3 = "5 * 9 * (7 * 3 * 3 + 9 * 3 + (8 + 6 * 4))"
-     val result3 = parse(string3)
-     println(result3)
-
-     val string4 = "((2 + 4 * 9) * (6 + 9 * 8 + 6) + 6) + 2 + 4 * 2"
-     val result4 = parse(string4)
-     println(result4)
-
     Day18.input?.let {
         val result1 = part1(it)
         println("Part 1: $result1")
@@ -51,14 +16,12 @@ fun main() {
 
 fun part1(lines: List<String>): Long {
     return lines.fold(0L) { acc, line ->
-        acc + parse(line)
+        acc + parsePart1(line)
     }
-
 }
 
 
-fun parse(string: String): Long {
-    val input = string.replace("\\s", "")
+fun parsePart1(input: String): Long {
     var right: Long? = null
     var operator: Operator? = null
     var opening = 0
@@ -91,9 +54,9 @@ fun parse(string: String): Long {
             c == '(' -> {
                 if (opening == closing) {
                     right = when (operator) {
-                        null -> parse(string.substring(1))
-                        Operator.PLUS -> right!! + parse(string.substring(i + 1))
-                        Operator.TIMES -> right!! * parse(string.substring(i + 1))
+                        null -> parsePart1(input.substring(1))
+                        Operator.PLUS -> right!! + parsePart1(input.substring(i + 1))
+                        Operator.TIMES -> right!! * parsePart1(input.substring(i + 1))
                     }
                 }
                 opening++
